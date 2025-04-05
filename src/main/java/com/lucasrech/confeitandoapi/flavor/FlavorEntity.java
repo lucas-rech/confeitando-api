@@ -41,15 +41,4 @@ public class FlavorEntity {
     public int hashCode() {
         return Objects.hash(id, title, description, value, imageUrl);
     }
-
-    @Override
-    public String toString() {
-        return "FlavorEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", value=" + value +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
-    }
 }

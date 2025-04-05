@@ -20,7 +20,7 @@ public class FlavorEntity {
     @Column(nullable = false, length = 60)
     private String title;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -28,6 +28,13 @@ public class FlavorEntity {
 
     @Column(nullable = false)
     private String imageUrl;
+
+    public FlavorEntity(String title, String description, Double value, String imageUrl) {
+        this.title = title;
+        this.description = description;
+        this.value = value;
+        this.imageUrl = imageUrl;
+    }
 
 
     @Override

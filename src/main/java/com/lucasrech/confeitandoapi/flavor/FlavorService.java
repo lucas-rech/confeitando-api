@@ -1,50 +1,37 @@
 package com.lucasrech.confeitandoapi.flavor;
 
+import com.lucasrech.confeitandoapi.utils.ImageUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+
+import static com.lucasrech.confeitandoapi.utils.ImageUtils.saveImage;
+import static com.lucasrech.confeitandoapi.utils.ImageUtils.saveMultipleImages;
 
 @Service
 public class FlavorService {
 
+
+    //TODO: Criar tratamento de exceções para os métodos
     @Value("${upload.dir}")
     private String uploadDir;
 
-    //TODO: Criar tratamento de exceções para os métodos
-
     private final FlavorRepository flavorRepository;
 
+    @Autowired
     public FlavorService(FlavorRepository flavorRepository) {
         this.flavorRepository = flavorRepository;
     }
 
     /*
     TODO: Criar um método para verificar se o arquivo é uma imagem válida
-    TODO: Separar a lógica de upload de imagem em um serviço separado
     TODO: Limitar o tamanho do arquivo e formato (jpg, png, etc.)
     TODO: Criar um método para deletar a imagem do servidor quando o sabor for deletado
     TODO: Criar um método para atualizar a imagem do sabor
     TODO: Alterar variável de ambiente do caminhho de upload quando for criar o serviço
      */
-    public String saveImage(MultipartFile file) throws IOException {
-        Path uploadPath = Paths.get(uploadDir);
-        if (!uploadPath.toFile().exists()) {
-            java.nio.file.Files.createDirectories(uploadPath);
-        }
-
-        String fileName = file.getOriginalFilename();
-        Path filePath = uploadPath.resolve(Objects.requireNonNull(fileName));
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath.toString();
-    }
 
     public void createFlavor(FlavorDTO flavorDTO) throws IOException {
         if(getFlavorByTitle(flavorDTO.title()) != null) {
@@ -52,7 +39,7 @@ public class FlavorService {
         }
 
         //Salva a imagem
-        String imagePath = saveImage(flavorDTO.image());
+        String imagePath = saveImage(flavorDTO.image(), uploadDir);
 
 
         //Cria o objeto FlavorEntity

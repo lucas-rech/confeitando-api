@@ -11,6 +11,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "flavors")
 public class FlavorEntity {
 
     @Id
@@ -23,16 +24,16 @@ public class FlavorEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private Double value;
+    @Column(nullable = false, name = "price")
+    private Double price;
 
     @Column(nullable = false)
     private String imageUrl;
 
-    public FlavorEntity(String title, String description, Double value, String imageUrl) {
+    public FlavorEntity(String title, String description, Double price, String imageUrl) {
         this.title = title;
         this.description = description;
-        this.value = value;
+        this.price = price;
         this.imageUrl = imageUrl;
     }
 
@@ -41,11 +42,11 @@ public class FlavorEntity {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         FlavorEntity that = (FlavorEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(value, that.value) && Objects.equals(imageUrl, that.imageUrl);
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(price, that.price) && Objects.equals(imageUrl, that.imageUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, value, imageUrl);
+        return Objects.hash(id, title, description, price, imageUrl);
     }
 }

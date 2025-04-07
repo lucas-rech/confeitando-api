@@ -28,6 +28,10 @@ public class FlavorService {
     /*
     TODO: Criar um método para verificar se o arquivo é uma imagem válida
     TODO: Separar a lógica de upload de imagem em um serviço separado
+    TODO: Limitar o tamanho do arquivo e formato (jpg, png, etc.)
+    TODO: Criar um método para deletar a imagem do servidor quando o sabor for deletado
+    TODO: Criar um método para atualizar a imagem do sabor
+    TODO: Alterar variável de ambiente do caminhho de upload quando for criar o serviço
      */
     public String saveImage(MultipartFile file) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
@@ -42,7 +46,7 @@ public class FlavorService {
         return filePath.toString();
     }
 
-    public FlavorEntity createFlavor(FlavorDTO flavorDTO) throws IOException {
+    public void createFlavor(FlavorDTO flavorDTO) throws IOException {
         if(getFlavorByTitle(flavorDTO.title()) != null) {
             throw new IllegalArgumentException("Flavor with this title already exists");
         }
@@ -55,10 +59,10 @@ public class FlavorService {
         FlavorEntity flavor = new FlavorEntity(
                 flavorDTO.title(),
                 flavorDTO.description(),
-                flavorDTO.value(),
+                flavorDTO.price(),
                 imagePath
         );
-        return flavorRepository.save(flavor);
+        flavorRepository.save(flavor);
     }
 
     public FlavorEntity getFlavorById(Integer id) {
@@ -68,8 +72,6 @@ public class FlavorService {
     public FlavorEntity getFlavorByTitle(String title) {
         if(title == null || title.isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
-        } else if (flavorRepository.findByTitle(title) == null) {
-            throw new IllegalArgumentException("Flavor with this title does not exist");
         }
         return flavorRepository.findByTitle(title);
     }

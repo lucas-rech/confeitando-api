@@ -1,6 +1,8 @@
 package com.lucasrech.confeitandoapi.flavor;
 
 
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,19 +22,18 @@ public class FlavorController {
 
     //TODO: Criar um DTO para o retorno do método
     @PostMapping("/create")
-    public ResponseEntity<FlavorDTO> saveFlavor(@ModelAttribute FlavorDTO flavorDTO) throws IOException {
-        try {
-            flavorService.createFlavor(flavorDTO);
-            return ResponseEntity.ok(flavorDTO);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    new FlavorDTO(
-                            null,
-                            "Error: " + e.getMessage(),
-                            null,
-                            null
-                    )
-            );
-        }
+    public ResponseEntity<FlavorResponseDTO> saveFlavor(@ModelAttribute FlavorDTO flavorDTO) throws IOException {
+        flavorService.createFlavor(flavorDTO);
+
+        FlavorEntity flavor = flavorService.getFlavorByTitle(flavorDTO.title());
+
+        FlavorResponseDTO FlavorResponseDTO = new FlavorResponseDTO(
+                flavor.getTitle(),
+                flavor.getDescription(),
+                flavor.getPrice(),
+                flavor.getImageUrl()
+        );
+
+        return ResponseEntity.ok(FlavorResponseDTO);
     }
 }

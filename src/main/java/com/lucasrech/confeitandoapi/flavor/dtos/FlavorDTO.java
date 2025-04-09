@@ -1,4 +1,4 @@
-package com.lucasrech.confeitandoapi.flavor;
+package com.lucasrech.confeitandoapi.flavor.dtos;
 
 import org.springframework.web.multipart.MultipartFile;
 

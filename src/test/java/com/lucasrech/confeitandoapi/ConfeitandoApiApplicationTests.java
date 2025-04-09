@@ -42,7 +42,7 @@ class ConfeitandoApiApplicationTests {
         when(multipartFile.isEmpty()).thenReturn(true);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                saveImage(multipartFile, uploadDir));
+                saveImage(multipartFile, uploadDir, ""));
 
         assertEquals("File is empty", exception.getMessage());
     }
@@ -57,7 +57,7 @@ class ConfeitandoApiApplicationTests {
         Path uploadPath = Paths.get(uploadDir);
         Files.createDirectories(uploadPath);
 
-        String result = saveImage(multipartFile, uploadDir);
+        String result = saveImage(multipartFile, uploadDir, "test-image");
 
         assertEquals(uploadPath.resolve("test-image.jpg").toString(), result);
         verify(multipartFile, times(1)).getInputStream();

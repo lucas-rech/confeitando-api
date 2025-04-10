@@ -2,14 +2,13 @@ package com.lucasrech.confeitandoapi.flavor;
 
 
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDeleteRequestDTO;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorResponseDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/flavors")
@@ -20,7 +19,6 @@ public class FlavorController {
         this.flavorService = flavorService;
     }
 
-    //TODO: Criar um DTO para o retorno do método
     @PostMapping("/create")
     public ResponseEntity<FlavorResponseDTO> saveFlavor(@ModelAttribute FlavorDTO flavorDTO) throws IOException {
         flavorService.createFlavor(flavorDTO);
@@ -35,5 +33,26 @@ public class FlavorController {
         );
 
         return ResponseEntity.ok(FlavorResponseDTO);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteFlavor(FlavorDeleteRequestDTO flavorDeleteRequestDTO) {
+        flavorService.deleteFlavor(flavorDeleteRequestDTO.id());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<FlavorResponseDTO>> getAllFlavors() {
+        List<FlavorEntity> flavors = flavorService.getAllFlavors();
+        List<FlavorResponseDTO> flavorResponseDTOs = flavors.stream()
+                .map(flavor -> new FlavorResponseDTO(
+                        flavor.getTitle(),
+                        flavor.getDescription(),
+                        flavor.getPrice(),
+                        flavor.getImageUrl()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(flavorResponseDTOs);
     }
 }

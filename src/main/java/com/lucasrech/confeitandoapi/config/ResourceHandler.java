@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ResourceHandler implements WebMvcConfigurer {
 
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/flavors/**")
+        registry.addResourceHandler("/resources/static/flavors/**")
                 .addResourceLocations("file:src/main/resources/static/flavors/");
     }
 }

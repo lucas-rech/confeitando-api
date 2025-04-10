@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 
 import static com.lucasrech.confeitandoapi.utils.ImageUtils.saveImage;
 import static com.lucasrech.confeitandoapi.utils.ImageUtils.validateImageNameAndExtension;
@@ -27,11 +29,9 @@ public class FlavorService {
     }
 
     /*
-    TODO: Criar um método para verificar se o arquivo é uma imagem válida
-    TODO: Limitar o tamanho do arquivo e formato (jpg, png, etc.)
+    TODO: Limitar o tamanho do arquivo
     TODO: Criar um método para deletar a imagem do servidor quando o sabor for deletado
     TODO: Criar um método para atualizar a imagem do sabor
-    TODO: Alterar variável de ambiente do caminhho de upload quando for criar o serviço
      */
 
     /**
@@ -81,8 +81,25 @@ public class FlavorService {
         return flavor;
     }
 
+    public List<FlavorEntity> getAllFlavors() {
+        List<FlavorEntity> flavors = flavorRepository.findAll();
+        if(flavors.isEmpty()) {
+            throw new FlavorException("No flavors found");
+        }
+
+        return flavors;
+    }
+
+    //TODO: Conferir se é necessário implementar mais alguma lógica de validação
     public void deleteFlavor(Integer id) {
-        flavorRepository.deleteById(id);
+        if(id == null || id <= 0) {
+            throw new FlavorException("Ivalid id");
+        }
+        FlavorEntity flavor = getFlavorById(id);
+        if(flavor == null) {
+            throw new FlavorException("Flavor not found");
+        }
+        flavorRepository.delete(flavor);
     }
 
     public FlavorEntity updateFlavor(Integer id, FlavorEntity updatedFlavor) {

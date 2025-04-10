@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.io.IOException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -20,6 +22,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handleImageException(ImageException ex) {
         return ResponseEntity.badRequest().body(
                 new ErrorDTO(ex.getMessage())
+        );
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorDTO> handleIOException(IOException ex) {
+        return ResponseEntity.internalServerError().body(
+                new ErrorDTO("Internal server error: " + ex.getMessage())
         );
     }
 }

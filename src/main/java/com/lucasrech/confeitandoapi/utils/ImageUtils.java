@@ -40,6 +40,22 @@ public class ImageUtils {
         }
     }
 
+    /**
+     * Esse método deleta uma imagem do servidor, caso ela exista.
+     * É necessário informar o diretório raiz da aplicação e o caminho da imagem separadamente.
+     * @param rootDir diretório raiz da aplicação
+     * @param imagePath caminho da imagem a ser deletada
+     * @throws IOException
+     */
+    public static void deleteImage(String rootDir, String imagePath) throws IOException {
+        Path path = Paths.get(rootDir + imagePath);
+        if (Files.exists(path)) {
+            Files.delete(path);
+        } else {
+            throw new ImageException("File not found in path: {root}/" + imagePath);
+        }
+    }
+
     public static String saveMultipleImages(MultipartFile[] files, String uploadDir) throws IOException {
         if (files.length == 0) {
             throw new ImageException("Files are empty");

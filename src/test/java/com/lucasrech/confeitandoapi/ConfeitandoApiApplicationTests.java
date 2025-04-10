@@ -2,6 +2,7 @@ package com.lucasrech.confeitandoapi;
 
 import com.lucasrech.confeitandoapi.flavor.FlavorRepository;
 import com.lucasrech.confeitandoapi.flavor.FlavorService;
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -34,7 +35,7 @@ class ConfeitandoApiApplicationTests {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        flavorService = new FlavorService(flavorRepository);
+        flavorService = new FlavorService(flavorRepository, uploadDir);
     }
 
     @Test
@@ -64,12 +65,13 @@ class ConfeitandoApiApplicationTests {
     }
 
     @Test
-    public void testSaveFlavor_Success() {
+    public void testSaveFlavor_Success() throws IOException {
     }
 
     //CASO ALGUM DOS VALORES INFORMADOS SEJA NULO OU VAZIO, NÃO DEVE SALVAR A IMAGEM
     @Test
-    public void testSaveFlavor_EmptyTitle() {}
+    public void testSaveFlavor_EmptyTitle() throws IOException {
+    }
 
     @Test
     public void testSaveFlavor_EmptyDescription() {}

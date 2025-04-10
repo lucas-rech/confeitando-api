@@ -2,6 +2,7 @@ package com.lucasrech.confeitandoapi.flavor;
 
 import com.lucasrech.confeitandoapi.exceptions.FlavorException;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
+import com.lucasrech.confeitandoapi.utils.ImageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,22 +11,28 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.lucasrech.confeitandoapi.utils.ImageUtils.saveImage;
-import static com.lucasrech.confeitandoapi.utils.ImageUtils.validateImageNameAndExtension;
+import static com.lucasrech.confeitandoapi.utils.ImageUtils.*;
 
 @Service
 public class FlavorService {
 
 
-    //TODO: Criar tratamento de exceções para os métodos
     @Value("${upload.dir}")
     private String uploadDir;
+
+    @Value("${root.dir}")
+    private String rootDir;
 
     private final FlavorRepository flavorRepository;
 
     @Autowired
     public FlavorService(FlavorRepository flavorRepository) {
         this.flavorRepository = flavorRepository;
+    }
+
+    public FlavorService(FlavorRepository flavorRepository, String uploadDir) {
+        this.flavorRepository = flavorRepository;
+        this.uploadDir = uploadDir;
     }
 
     /*
@@ -91,7 +98,8 @@ public class FlavorService {
     }
 
     //TODO: Conferir se é necessário implementar mais alguma lógica de validação
-    public void deleteFlavor(Integer id) {
+
+    public void deleteFlavor(Integer id) throws IOException {
         if(id == null || id <= 0) {
             throw new FlavorException("Ivalid id");
         }
@@ -100,6 +108,7 @@ public class FlavorService {
             throw new FlavorException("Flavor not found");
         }
         flavorRepository.delete(flavor);
+        deleteImage(rootDir, flavor.getImageUrl());
     }
 
     public FlavorEntity updateFlavor(Integer id, FlavorEntity updatedFlavor) {

@@ -36,7 +36,7 @@ public class FlavorController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteFlavor(FlavorDeleteRequestDTO flavorDeleteRequestDTO) {
+    public ResponseEntity<?> deleteFlavor(FlavorDeleteRequestDTO flavorDeleteRequestDTO) throws IOException {
         flavorService.deleteFlavor(flavorDeleteRequestDTO.id());
         return ResponseEntity.ok().build();
     }

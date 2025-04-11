@@ -2,14 +2,14 @@ package com.lucasrech.confeitandoapi.flavor;
 
 import com.lucasrech.confeitandoapi.exceptions.FlavorException;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
-import com.lucasrech.confeitandoapi.utils.ImageUtils;
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorUpdateRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
+
 
 import static com.lucasrech.confeitandoapi.utils.ImageUtils.*;
 
@@ -98,7 +98,6 @@ public class FlavorService {
     }
 
     //TODO: Conferir se é necessário implementar mais alguma lógica de validação
-
     public void deleteFlavor(Integer id) throws IOException {
         if(id == null || id <= 0) {
             throw new FlavorException("Ivalid id");
@@ -111,11 +110,30 @@ public class FlavorService {
         deleteImage(rootDir, flavor.getImageUrl());
     }
 
-    public FlavorEntity updateFlavor(Integer id, FlavorEntity updatedFlavor) {
-        if (flavorRepository.existsById(id)) {
-            updatedFlavor.setId(id);
-            return flavorRepository.save(updatedFlavor);
+    public void updateFlavor(Integer id, FlavorUpdateRequestDTO flavorUpdateRequestDTO) throws IOException {
+        if(!flavorRepository.existsById(id)) {
+            throw new FlavorException("Flavor not found");
         }
-        return null;
+
+        FlavorEntity flavor = getFlavorById(id);
+        String savePath;
+        //TODO: Criar método para alterar apenas o nome da imagem caso o usuário não tenha alterado a imagem na requisição
+        if(flavorUpdateRequestDTO.image() != null) {
+            String imageName = validateImageNameAndExtension(flavorUpdateRequestDTO.title(), flavorUpdateRequestDTO.image());
+            savePath = uploadDir.replace(uploadDir, "resources/static/flavors/" + imageName);
+            updateImage( rootDir, uploadDir, flavor.getImageUrl(), flavorUpdateRequestDTO.image(), flavorUpdateRequestDTO.title());
+
+        } else {
+            savePath = flavor.getImageUrl();
+        }
+
+        flavorRepository.findById(flavorUpdateRequestDTO.id())
+                .ifPresent(newFlavor -> {
+                    newFlavor.setTitle(flavorUpdateRequestDTO.title());
+                    newFlavor.setDescription(flavorUpdateRequestDTO.description());
+                    newFlavor.setPrice(flavorUpdateRequestDTO.price());
+                    newFlavor.setImageUrl(savePath);
+                    flavorRepository.save(newFlavor);
+                });
     }
 }

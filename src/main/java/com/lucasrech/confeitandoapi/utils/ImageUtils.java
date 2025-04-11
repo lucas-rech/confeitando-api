@@ -45,14 +45,13 @@ public class ImageUtils {
      * É necessário informar o diretório raiz da aplicação e o caminho da imagem separadamente.
      * @param rootDir diretório raiz da aplicação
      * @param imagePath caminho da imagem a ser deletada
-     * @throws IOException
      */
     public static void deleteImage(String rootDir, String imagePath) throws IOException {
         Path path = Paths.get(rootDir + imagePath);
         if (Files.exists(path)) {
             Files.delete(path);
         } else {
-            throw new ImageException("File not found in path: {root}/" + imagePath);
+            throw new ImageException("File not found in path: " + rootDir + imagePath);
         }
     }
 
@@ -105,5 +104,15 @@ public class ImageUtils {
         imageName = imageName + extension;
 
         return imageName;
+    }
+
+    //TODO: Buscar forma de refatorar esse método para deixar mais limpo
+    public static void updateImage(String rootDir, String updateDir, String imagePath, MultipartFile file, String title) throws IOException {
+        if(!isValidImage(file)) {
+            throw new ImageException("Invalid format image");
+        } else {
+            deleteImage(rootDir, imagePath);
+            saveImage(file, updateDir + "/flavors", title);
+        }
     }
 }

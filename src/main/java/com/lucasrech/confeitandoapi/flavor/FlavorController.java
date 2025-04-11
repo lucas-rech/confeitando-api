@@ -4,6 +4,7 @@ package com.lucasrech.confeitandoapi.flavor;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDTO;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorDeleteRequestDTO;
 import com.lucasrech.confeitandoapi.flavor.dtos.FlavorResponseDTO;
+import com.lucasrech.confeitandoapi.flavor.dtos.FlavorUpdateRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +55,21 @@ public class FlavorController {
                 .toList();
 
         return ResponseEntity.ok(flavorResponseDTOs);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<FlavorResponseDTO> updateFlavor(@ModelAttribute FlavorUpdateRequestDTO flavorUpdateRequestDTO) throws IOException {
+        flavorService.updateFlavor(flavorUpdateRequestDTO.id(), flavorUpdateRequestDTO);
+
+        FlavorEntity flavor = flavorService.getFlavorById(flavorUpdateRequestDTO.id());
+
+        FlavorResponseDTO FlavorResponseDTO = new FlavorResponseDTO(
+                flavor.getTitle(),
+                flavor.getDescription(),
+                flavor.getPrice(),
+                flavor.getImageUrl()
+        );
+
+        return ResponseEntity.ok(FlavorResponseDTO);
     }
 }

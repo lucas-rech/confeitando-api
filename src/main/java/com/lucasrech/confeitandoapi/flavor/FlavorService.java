@@ -35,11 +35,7 @@ public class FlavorService {
         this.uploadDir = uploadDir;
     }
 
-    /*
-    TODO: Limitar o tamanho do arquivo
-    TODO: Criar um método para deletar a imagem do servidor quando o sabor for deletado
-    TODO: Criar um método para atualizar a imagem do sabor
-     */
+    //TODO: Limitar o tamanho do arquivo
 
     /**
      * Esse método realiza duas operações importantes:

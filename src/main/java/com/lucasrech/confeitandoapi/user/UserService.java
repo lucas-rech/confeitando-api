@@ -12,15 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
-    public UserEntity createUser(UserRequestDTO user) {
+    public void createUser(UserRequestDTO user) {
        if(user.email() == null || user.email().isEmpty()) {
             throw new UserException("Email cannot be null or empty");
         }
@@ -33,14 +31,13 @@ public class UserService implements UserDetailsService {
         if(userRepository.findByEmail(user.email()).isPresent()) {
             throw new UserException("Email already exists");
         }
-        String encodedPassword = passwordEncoder.encode(user.password());
         UserEntity newUser = new UserEntity(
                 user.name(),
                 user.email(),
-                encodedPassword
+                user.password()
         );
 
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
     }
 
 

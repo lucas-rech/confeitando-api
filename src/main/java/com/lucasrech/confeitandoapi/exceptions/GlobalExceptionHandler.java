@@ -31,4 +31,11 @@ public class GlobalExceptionHandler {
                 new ErrorDTO("Internal server error: " + ex.getMessage())
         );
     }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorDTO> handleException(UserException ex) {
+        return ResponseEntity.badRequest().body(
+                new ErrorDTO(ex.getMessage())
+        );
+    }
 }

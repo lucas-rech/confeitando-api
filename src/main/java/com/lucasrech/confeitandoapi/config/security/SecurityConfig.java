@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register", "/h2-console/**", "/flavors/all").permitAll()
+                        .requestMatchers("/users/register", "/h2-console/**", "/flavors/all", "/users/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new AuthFilter(jwtService, userService), UsernamePasswordAuthenticationFilter.class);

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
 
+//TODO: Refatorar para que faça a lógica inversa e verifique se é um endpoint privado que exige autenticação
 public class AuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -23,7 +24,8 @@ public class AuthFilter extends OncePerRequestFilter {
     private static final List<Pattern> PUBLIC_ENDPOINTS = List.of(
             Pattern.compile("/users/register"),
             Pattern.compile("/h2-console/.*"),
-            Pattern.compile("/flavors/all")
+            Pattern.compile("/flavors/all"),
+            Pattern.compile("/users/login")
     );
 
     public AuthFilter(JwtService jwtService, UserService userService) {

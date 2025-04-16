@@ -1,10 +1,13 @@
 package com.lucasrech.confeitandoapi.user;
 
 import com.lucasrech.confeitandoapi.config.security.JwtService;
+import com.lucasrech.confeitandoapi.exceptions.UserException;
+import com.lucasrech.confeitandoapi.user.dto.LoginRequestDTO;
 import com.lucasrech.confeitandoapi.user.dto.UserLoginResponseDTO;
 import com.lucasrech.confeitandoapi.user.dto.UserRequestDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,5 +37,21 @@ public class UserController {
         );
         userService.createUser(userDTO);
         return ResponseEntity.ok(new UserLoginResponseDTO(userRequestDTO.name(), null));
+    }
+
+    //TODO: Refatorar para que a verificação de senha seja feita no service User
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponseDTO> loginUser(LoginRequestDTO loginRequestDTO) {
+        String token = jwtService.generateToken(loginRequestDTO.email());
+        UserDetails user = userService.loadUserByUsername(loginRequestDTO.email());
+        if(user == null) {
+            throw new UserException("User not found with email: " + loginRequestDTO.email());
+        }
+        // Check if the password matches the encoded password
+        if(passwordEncoder.matches(loginRequestDTO.password(), user.getPassword())) {
+            return ResponseEntity.ok(new UserLoginResponseDTO(user.getUsername(), token));
+        } else {
+            throw new UserException("Invalid credentials. Password: " + loginRequestDTO.password());
+        }
     }
 }

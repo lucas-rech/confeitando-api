@@ -5,6 +5,9 @@ import com.lucasrech.confeitandoapi.exceptions.UserException;
 import com.lucasrech.confeitandoapi.user.dto.LoginRequestDTO;
 import com.lucasrech.confeitandoapi.user.dto.UserLoginResponseDTO;
 import com.lucasrech.confeitandoapi.user.dto.UserRequestDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.Table;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.token.TokenService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User", description = "User API")
 public class UserController {
 
     private final UserService userService;
@@ -27,6 +31,10 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(
+            summary = "Create User",
+            description = "Create a new user with name, email and password"
+    )
     @PostMapping("/register")
     public ResponseEntity<UserLoginResponseDTO> saveUser(UserRequestDTO userRequestDTO) {
         String encodedPassword = passwordEncoder.encode(userRequestDTO.password());
@@ -40,6 +48,10 @@ public class UserController {
     }
 
     //TODO: Refatorar para que a verificação de senha seja feita no service User
+    @Operation(
+            summary = "Login User",
+            description = "Login a user with email and password"
+    )
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> loginUser(LoginRequestDTO loginRequestDTO) {
         String token = jwtService.generateToken(loginRequestDTO.email());

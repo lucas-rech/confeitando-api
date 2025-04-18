@@ -46,8 +46,12 @@ public class FlavorService {
      * @throws IOException Se ocorrer um erro ao salvar a imagem.
      */
     public void createFlavor(FlavorDTO flavorDTO) throws IOException {
-        if(getFlavorByTitle(flavorDTO.title()) != null) {
-            throw new FlavorException("Flavor with this title already exists");
+        //Verifica se já existe um sabor com o mesmo título
+        if(flavorRepository.existsByTitle(flavorDTO.title())) {
+            throw new FlavorException("Flavor already exists with title: " + flavorRepository.existsByTitle(flavorDTO.title()));
+        }
+        if(flavorDTO.title().isEmpty()) {
+            throw new FlavorException("Flavor title is empty");
         }
 
         //Salva a imagem e cria caminho filtrado para salvar no banco de dados apenas o nome da imagem e o diretório resources nesse caso
@@ -67,20 +71,21 @@ public class FlavorService {
     }
 
     public FlavorEntity getFlavorById(Integer id) {
-        return flavorRepository.findById(id).orElse(null);
+
+        return flavorRepository.findById(id)
+                .orElseThrow(() -> new FlavorException("Flavor not found"));
     }
 
     public FlavorEntity getFlavorByTitle(String title) {
-        if(title == null || title.isEmpty()) {
-            throw new FlavorException("Title cannot be null or empty");
-        }
+
         FlavorEntity flavor = flavorRepository.findByTitle(title);
-        if(flavor != null) {
-            flavor.setImageUrl(
-                    //Altera o caminho da imagem removendo o root e retornando a url correta e de forma segura
-                    flavor.getImageUrl().replace(uploadDir, "static")
-            );
+        if(flavor.getTitle() == null) {
+            throw new FlavorException("Flavor not found");
         }
+        flavor.setImageUrl(
+                //Altera o caminho da imagem removendo o root e retornando a url correta e de forma segura
+                flavor.getImageUrl().replace(uploadDir, "static")
+        );
         return flavor;
     }
 

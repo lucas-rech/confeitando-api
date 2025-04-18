@@ -9,4 +9,6 @@ public interface FlavorRepository extends JpaRepository<FlavorEntity, Integer> {
     //TODO: Verificar se é necessário adicionar outros métodos personalizados aqui
 
     FlavorEntity findByTitle(String title);
+
+    boolean existsByTitle(String title);
 }

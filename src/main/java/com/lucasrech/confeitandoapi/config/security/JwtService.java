@@ -3,21 +3,25 @@ package com.lucasrech.confeitandoapi.config.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
 
-@Service
+@Component
 public class JwtService {
-    ZoneOffset offset = ZoneOffset.of("-03:00");
+
+    // UTC -03:00
+    private final ZoneOffset offset = ZoneOffset.of("-03:00");
+
     @Value("${secret.key}")
     private String secret;
 
     @Value("${jwt.issuer}")
     private String issuer;
 
-
+    @Value("${jwt.expiration}")
+    private long expirationTime;
 
     public String generateToken(String user) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -44,7 +48,7 @@ public class JwtService {
     }
 
     private Instant expirationDate() {
-        return Instant.now().plusSeconds(7200).atZone(offset).toInstant();
+        return Instant.now().plusSeconds(expirationTime).atZone(offset).toInstant();
     }
 
 
